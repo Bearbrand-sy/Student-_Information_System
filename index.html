@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CampusTrack SIS - Student Information System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style id="app-style">
+    :root {
+      --primary-blue: #1a73e8;
+      --secondary-blue: #4285f4;
+      --light-blue: #e8f0fe;
+      --dark-blue: #174ea6;
+      --gray-light: #f8f9fa;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+    }
+    
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+    
+    .login-logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--dark-blue);
+      border-color: var(--dark-blue);
+    }
+    
+    .navbar {
+      background-color: var(--primary-blue);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-brand {
+      font-weight: bold;
+      color: white;
+    }
+    
+    .nav-link {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    .nav-link:hover {
+      color: white !important;
+    }
+    
+    .profile-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .student-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--light-blue);
+    }
+    
+    .tab-content {
+      background-color: white;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+    }
+    
+ #mainTabs .nav-link {
+    color: black !important;
+  }
+
+  #mainTabs .nav-link.active {
+    color: black !important;
+  }
+    
+    .course-card {
+      transition: transform 0.2s;
+      margin-bottom: 15px;
+    }
+    
+    .course-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .table-responsive {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    table thead {
+      background-color: var(--light-blue);
+    }
+    
+    .edit-grade-btn {
+      color: var(--primary-blue);
+      cursor: pointer;
+    }
+    
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 0.2em solid rgba(0, 0, 0, 0.1);
+      border-top: 0.2em solid var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .dashboard-container {
+      display: none;
+    }
+    
+    .chart-container {
+      height: 400px;
+      margin-bottom: 30px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .logout-link {
+      cursor: pointer;
+    }
+    
+    .login-error-enhanced {
+      background-color: #ffebee;
+      border-left: 4px solid #f44336;
+      padding: 15px;
+      margin-top: 15px;
+      color: #d32f2f;
+      font-weight: 500;
+      animation: shake 0.5s;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .input-error-shake {
+      border-color: #f44336 !important;
+      animation: shake 0.5s;
+    }
+    
+    /* New announcement styling */
+    .card-header.bg-primary.text-white {
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)) !important;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 4px 6px rgba(26, 115, 232, 0.1);
+      padding: 15px 20px;
+      border: none;
+    }
+    
+    #assignments .alert {
+      border-left: 5px solid;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+    
+    #assignments .alert:hover {
+      transform: translateY(-2px);
+    }
+    
+    #assignments .alert-info {
+      background: linear-gradient(to right, rgba(232, 244, 253, 0.8), rgba(232, 244, 253, 0.4));
+      border-left-color: var(--secondary-blue);
+    }
+    
+    #assignments .alert-warning {
+      background: linear-gradient(to right, rgba(255, 243, 224, 0.8), rgba(255, 243, 224, 0.4));
+      border-left-color: #fbbc05;
+    }
+    
+    #assignments .alert strong {
+      display: block;
+      margin-bottom: 5px;
+      color: rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Form -->
+  <div class="login-container" id="login-container">
+    <div class="login-logo">
+      <h1 class="text-primary"><i class="fas fa-university me-2"></i>CampusTrack SIS</h1>
+      <p class="text-muted">Student Information System</p>
+    </div>
+    <form id="login-form">
+      <div class="mb-3">
+        <label for="studentId" class="form-label">Student ID</label>
+        <input type="text" class="form-control" id="studentId" required>
+        <div class="invalid-feedback">Please enter your Student ID.</div>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" required>
+        <div class="invalid-feedback">Please enter your password.</div>
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Login</button>
+      </div>
+      <p class="text-center mt-3">
+        <a href="javascript:void(0)" class="text-decoration-none">Forgot Password?</a>
+      </p>
+      <div id="login-error" class="mt-3 hidden"></div>
+    </form>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div class="dashboard-container" id="dashboard-container">
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="javascript:void(0)">
+          <i class="fas fa-university me-2"></i>CampusTrack SIS
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="javascript:void(0)">
+                <i class="fas fa-user me-1"></i> Profile
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="javascript:void(0)">
+                <i class="fas fa-question-circle me-1"></i> Help
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link logout-link" id="logout-link">
+                <i class="fas fa-sign-out-alt me-1"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container mt-4">
+      <!-- Profile Summary -->
+      <div class="row profile-card">
+        <div class="col-md-2 text-center mb-3 mb-md-0">
+          <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Student Photo" class="student-avatar">
+        </div>
+        <div class="col-md-5">
+          <h3 id="student-name">Loading...</h3>
+          <p class="text-muted mb-1" id="student-id">ID: Loading...</p>
+          <p class="mb-1"><i class="fas fa-graduation-cap me-2"></i><span id="student-program">Loading...</span></p>
+          <p class="mb-1"><i class="fas fa-building me-2"></i><span id="student-department">Loading...</span></p>
+        </div>
+        <div class="col-md-5">
+          <p class="mb-1"><i class="fas fa-envelope me-2"></i><span id="student-email">Loading...</span></p>
+          <p class="mb-1"><i class="fas fa-phone me-2"></i><span id="student-phone">Loading...</span></p>
+          <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i><span id="student-address">Loading...</span></p>
+          <p class="mb-0"><i class="fas fa-calendar me-2"></i>Academic Year: <span id="academic-year">Loading...</span></p>
+        </div>
+      </div>
+      
+<!-- Main Content Tabs -->
+<ul class="nav nav-tabs" id="mainTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button" role="tab" aria-controls="courses" aria-selected="true">
+      <i class="fas fa-book me-1"></i> Courses & Schedule
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="assignments-tab" data-bs-toggle="tab" data-bs-target="#assignments" type="button" role="tab" aria-controls="assignments" aria-selected="false">
+      <i class="fas fa-tasks me-1"></i> Assignments
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="grades-tab" data-bs-toggle="tab" data-bs-target="#grades" type="button" role="tab" aria-controls="grades" aria-selected="false">
+      <i class="fas fa-chart-bar me-1"></i> Grades Overview
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button" role="tab" aria-controls="progress" aria-selected="false">
+      <i class="fas fa-chart-line me-1"></i> Progress Charts
+    </button>
+  </li>
+</ul>
+      
+      <div class="tab-content" id="mainTabsContent">
+        <!-- Courses & Schedule Tab -->
+        <div class="tab-pane fade show active" id="courses" role="tabpanel" aria-labelledby="courses-tab">
+          <h4 class="mb-3">Current Semester Courses</h4>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Instructor</th>
+                  <th>Schedule</th>
+                  <th>Location</th>
+                  <th>Credits</th>
+                </tr>
+              </thead>
+              <tbody id="courses-table-body">
+                <tr>
+                  <td colspan="6" class="text-center">
+                    <div class="loading-spinner"></div> Loading courses...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Assignments Tab -->
+        <div class="tab-pane fade" id="assignments" role="tabpanel" aria-labelledby="assignments-tab">
+          <div class="row">
+            <div class="col-12 mb-4">
+              <div class="card">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i>Announcements</h5>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-info">
+                    <strong>Midterm Exam Schedule Posted!</strong> Please check your email for details.
+                  </div>
+                  <div class="alert alert-warning">
+                    <strong>Reminder:</strong> All CS301 assignments due this Friday at 11:59 PM.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-8">
+              <h4 class="mb-3">Upcoming Assignments</h4>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Course</th>
+                      <th>Assignment</th>
+                      <th>Due Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="assignments-table-body">
+                    <tr>
+                      <td colspan="5" class="text-center">
+                        <div class="loading-spinner"></div> Loading assignments...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="card mt-4">
+                <div class="card-header bg-light">
+                  <h5 class="mb-0">File Upload Assignment Submission</h5>
+                </div>
+                <div class="card-body">
+                  <form id="assignment-upload-form">
+                    <div class="mb-3">
+                      <label for="assignment-select" class="form-label">Select Assignment</label>
+                      <select class="form-select" id="assignment-select" required>
+                        <option value="">Choose an assignment...</option>
+                        <option value="cs301-hw3">CS301 - Homework 3</option>
+                        <option value="math250-project">MATH250 - Midterm Project</option>
+                        <option value="cs350-lab4">CS350 - Lab 4</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="assignment-file" class="form-label">Upload File</label>
+                      <input class="form-control" type="file" id="assignment-file" required>
+                      <div class="form-text">Accepted formats: .pdf, .docx, .zip (Max size: 10MB)</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="assignment-comments" class="form-label">Comments (Optional)</label>
+                      <textarea class="form-control" id="assignment-comments" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Assignment</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-4">
+              <h4 class="mb-3">Discussion Board</h4>
+              <div class="card">
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                  <div id="discussion-board">
+                    <div class="loading-spinner mb-2"></div> Loading discussions...
+                  </div>
+                  
+                  <form id="post-discussion-form" class="mt-3">
+                    <div class="mb-3">
+                      <label for="discussion-message" class="form-label">Post a message</label>
+                      <textarea class="form-control" id="discussion-message" rows="2" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Post Message</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Grades Overview Tab -->
+        <div class="tab-pane fade" id="grades" role="tabpanel" aria-labelledby="grades-tab">
+          <h4 class="mb-3">Semester Grades</h4>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Prelim</th>
+                  <th>Midterm</th>
+                  <th>Final Term</th>
+                  <th>Total Grade</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="grades-table-body">
+                <tr>
+                  <td colspan="7" class="text-center">
+                    <div class="loading-spinner"></div> Loading grades...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Progress Charts Tab -->
+        <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
+          <h4 class="mb-3">Grade Progression</h4>
+          <div class="chart-container">
+            <canvas id="gradesChart"></canvas>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header bg-light">
+                  <h5 class="mb-0">Performance Summary</h5>
+                </div>
+                <div class="card-body">
+                  <p class="mb-2">Current GPA: <strong id="current-gpa">Loading...</strong></p>
+                  <p class="mb-2">Best Performing Course: <strong id="best-course">Loading...</strong></p>
+                  <p class="mb-0">Areas for Improvement: <strong id="improvement-areas">Loading...</strong></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header bg-light">
+                  <h5 class="mb-0">Academic Goals</h5>
+                </div>
+                <div class="card-body">
+                  <p class="mb-2">Target GPA: <strong id="target-gpa">Loading...</strong></p>
+                  <p class="mb-2">Required Grades: <strong id="required-grades">Loading...</strong></p>
+                  <p class="mb-0">Academic Standing: <strong id="academic-standing">Loading...</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast Messages Container -->
+  <div class="toast-container"></div>
+  
+  <!-- Grade Edit Modal -->
+  <div class="modal fade" id="editGradeModal" tabindex="-1" aria-labelledby="editGradeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editGradeModalLabel">Edit Grade</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-grade-form">
+            <input type="hidden" id="edit-course-id">
+            <input type="hidden" id="edit-term-type">
+            
+            <div class="mb-3">
+              <label for="edit-course-name" class="form-label">Course</label>
+              <input type="text" class="form-control" id="edit-course-name" readonly>
+            </div>
+            
+            <div class="mb-3">
+              <label for="edit-term-name" class="form-label">Term</label>
+              <input type="text" class="form-control" id="edit-term-name" readonly>
+            </div>
+            
+            <div class="mb-3">
+              <label for="edit-grade-value" class="form-label">Grade</label>
+              <input type="number" class="form-control" id="edit-grade-value" min="0" max="100" required>
+              <div class="form-text">Enter a value between 0 and 100.</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="save-grade-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap, jQuery and other JS libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script id="app-script">
+    $(document).ready(function() {
+      // Login Form Validation
+      $('#login-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        let isValid = true;
+        const studentId = $('#studentId').val().trim();
+        const password = $('#password').val().trim();
+        
+        // Validate Student ID
+        if (!studentId) {
+          $('#studentId').addClass('is-invalid input-error-shake');
+          isValid = false;
+        } else {
+          $('#studentId').removeClass('is-invalid input-error-shake');
+        }
+        
+        // Validate Password
+        if (!password) {
+          $('#password').addClass('is-invalid input-error-shake');
+          isValid = false;
+        } else {
+          $('#password').removeClass('is-invalid input-error-shake');
+        }
+        
+        if (isValid) {
+          // Simulate login API call
+          loginUser(studentId, password);
+        }
+      });
+      
+      // Logout functionality
+      $('#logout-link').on('click', function() {
+        $('#login-container').show();
+        $('#dashboard-container').hide();
+        $('#studentId').val('');
+        $('#password').val('');
+        $('#login-error').addClass('hidden');
+      });
+      
+      // Handle tab switching - load data when tab is shown
+      $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+        const targetId = $(e.target).attr('href');
+        
+        if (targetId === '#courses') {
+          loadCourses();
+        } else if (targetId === '#grades') {
+          loadGrades();
+        } else if (targetId === '#progress') {
+          loadProgressCharts();
+        } else if (targetId === '#assignments') {
+          loadAssignments();
+          loadDiscussions();
+        }
+      });
+      
+      // Open Edit Grade Modal
+      $(document).on('click', '.edit-grade-btn', function() {
+        const courseId = $(this).data('course-id');
+        const courseName = $(this).data('course-name');
+        const termType = $(this).data('term-type');
+        const termName = $(this).data('term-name');
+        const currentValue = $(this).data('current-value');
+        
+        $('#edit-course-id').val(courseId);
+        $('#edit-course-name').val(courseName);
+        $('#edit-term-type').val(termType);
+        $('#edit-term-name').val(termName);
+        $('#edit-grade-value').val(currentValue);
+        
+        const editGradeModal = new bootstrap.Modal(document.getElementById('editGradeModal'));
+        editGradeModal.show();
+      });
+      
+      // Save Grade Changes
+      $('#save-grade-btn').on('click', function() {
+        const courseId = $('#edit-course-id').val();
+        const termType = $('#edit-term-type').val();
+        const gradeValue = $('#edit-grade-value').val();
+        
+        if (gradeValue >= 0 && gradeValue <= 100) {
+          updateGrade(courseId, termType, gradeValue);
+          const editGradeModal = bootstrap.Modal.getInstance(document.getElementById('editGradeModal'));
+          editGradeModal.hide();
+        } else {
+          // Show validation error
+          $('#edit-grade-value').addClass('is-invalid');
+        }
+      });
+      
+      // Assignment Upload Form
+      $('#assignment-upload-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        const assignmentId = $('#assignment-select').val();
+        const file = $('#assignment-file')[0].files[0];
+        const comments = $('#assignment-comments').val();
+        
+        if (assignmentId && file) {
+          submitAssignment(assignmentId, file, comments);
+        }
+      });
+      
+      // Post Discussion Message
+      $('#post-discussion-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        const message = $('#discussion-message').val().trim();
+        
+        if (message) {
+          postDiscussionMessage(message);
+          $('#discussion-message').val('');
+        }
+      });
+      
+      // === API Functions ===
+      
+      // Login User
+      function loginUser(studentId, password) {
+        $('#login-error').addClass('hidden').removeClass('login-error-enhanced');
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          if (studentId === "20231969" && password === "12345") {
+            $('#login-container').hide();
+            $('#dashboard-container').show();
+            loadStudentProfile();
+            loadCourses();
+          } else {
+            $('#studentId, #password').addClass('input-error-shake');
+            $('#login-error').removeClass('hidden')
+              .addClass('login-error-enhanced')
+              .text('Login failed: The Student ID or Password you entered is incorrect. Please use \'12345\' as Student ID and \'password\' as Password for testing.');
+          }
+        }, 1000);
+      }
+      
+      // Load Student Profile
+      function loadStudentProfile() {
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // This would be replaced with actual API data in the full implementation
+          $('#student-name').text('Sander Perejan');
+          $('#student-id').text('ID: 20231969');
+          $('#student-program').text('Bachelor of Science in Information Technology');
+          $('#student-department').text('Institute of Computer Studies');
+          $('#student-email').text('20231969@nbsc.edu.ph');
+          $('#student-phone').text('09922118799');
+          $('#student-address').text('New Corales, Agusan Canyon, Manolo Fortich, Bukidnon');
+          $('#academic-year').text('2024-2025');
+        }, 1000);
+      }
+      
+      // Load Courses
+      function loadCourses() {
+        $('#courses-table-body').html(`
+          <tr>
+            <td colspan="6" class="text-center">
+              <div class="loading-spinner"></div> Loading courses...
+            </td>
+          </tr>
+        `);
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // This would be replaced with actual API data in the full implementation
+          $('#courses-table-body').html(`
+            <tr>
+              <td>CS301</td>
+              <td>Advanced Programming</td>
+              <td>Dr. Sarah Johnson</td>
+              <td>Mon, Wed, Fri 10:00-11:30 AM</td>
+              <td>Engineering Building, Room 205</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>MATH250</td>
+              <td>Linear Algebra</td>
+              <td>Prof. Michael Chen</td>
+              <td>Tue, Thu 1:00-2:30 PM</td>
+              <td>Science Center, Room 110</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td>ENG210</td>
+              <td>Technical Writing</td>
+              <td>Dr. Emily Rodriguez</td>
+              <td>Wed 3:00-5:30 PM</td>
+              <td>Liberal Arts Building, Room 302</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td>CS350</td>
+              <td>Database Systems</td>
+              <td>Prof. David Wilson</td>
+              <td>Mon, Fri 1:00-2:30 PM</td>
+              <td>Engineering Building, Room 105</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>PHYS201</td>
+              <td>Physics for Engineers</td>
+              <td>Dr. Robert Lee</td>
+              <td>Tue, Thu 9:00-10:30 AM</td>
+              <td>Science Center, Room 220</td>
+              <td>4</td>
+            </tr>
+          `);
+          
+          showToast('success', 'Courses loaded successfully');
+        }, 1500);
+      }
+      
+      // Load Grades
+      function loadGrades() {
+        $('#grades-table-body').html(`
+          <tr>
+            <td colspan="7" class="text-center">
+              <div class="loading-spinner"></div> Loading grades...
+            </td>
+          </tr>
+        `);
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // This would be replaced with actual API data in the full implementation
+          $('#grades-table-body').html(`
+            <tr>
+              <td>CS301</td>
+              <td>Advanced Programming</td>
+              <td>85</td>
+              <td>88</td>
+              <td>90</td>
+              <td>88</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="CS301" data-course-name="Advanced Programming" data-term-type="prelim" data-term-name="Prelim" data-current-value="85">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>MATH250</td>
+              <td>Linear Algebra</td>
+              <td>78</td>
+              <td>82</td>
+              <td>85</td>
+              <td>82</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="MATH250" data-course-name="Linear Algebra" data-term-type="prelim" data-term-name="Prelim" data-current-value="78">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>ENG210</td>
+              <td>Technical Writing</td>
+              <td>90</td>
+              <td>92</td>
+              <td>88</td>
+              <td>90</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="ENG210" data-course-name="Technical Writing" data-term-type="prelim" data-term-name="Prelim" data-current-value="90">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>CS350</td>
+              <td>Database Systems</td>
+              <td>83</td>
+              <td>85</td>
+              <td>87</td>
+              <td>85</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="CS350" data-course-name="Database Systems" data-term-type="prelim" data-term-name="Prelim" data-current-value="83">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>PHYS201</td>
+              <td>Physics for Engineers</td>
+              <td>75</td>
+              <td>80</td>
+              <td>82</td>
+              <td>79</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="PHYS201" data-course-name="Physics for Engineers" data-term-type="prelim" data-term-name="Prelim" data-current-value="75">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `);
+          
+          showToast('success', 'Grades loaded successfully');
+        }, 500); // Changed from 1500 to 500 to speed up grades loading
+      }
+      
+      // Load Progress Charts
+      function loadProgressCharts() {
+        // Show loading state
+        $('#current-gpa').text('Loading...');
+        $('#best-course').text('Loading...');
+        $('#improvement-areas').text('Loading...');
+        $('#target-gpa').text('Loading...');
+        $('#required-grades').text('Loading...');
+        $('#academic-standing').text('Loading...');
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // Update summary data
+          $('#current-gpa').text('3.6');
+          $('#best-course').text('ENG210 - Technical Writing (A)');
+          $('#improvement-areas').text('PHYS201 - Physics for Engineers');
+          $('#target-gpa').text('3.8');
+          $('#required-grades').text('B+ or higher in remaining courses');
+          $('#academic-standing').text('Good Standing');
+          
+          // Initialize the chart
+          const ctx = document.getElementById('gradesChart').getContext('2d');
+          
+          // Destroy existing chart if it exists
+          if (window.gradesChart) {
+            window.gradesChart.destroy();
+          }
+          
+          // Create new chart
+          window.gradesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: ['Prelim', 'Midterm', 'Final'],
+              datasets: [
+                {
+                  label: 'CS301 - Advanced Programming',
+                  data: [85, 88, 90],
+                  borderColor: '#1a73e8',
+                  backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                  tension: 0.3,
+                  fill: true
+                },
+                {
+                  label: 'MATH250 - Linear Algebra',
+                  data: [78, 82, 85],
+                  borderColor: '#34a853',
+                  backgroundColor: 'rgba(52, 168, 83, 0.1)',
+                  tension: 0.3,
+                  fill: true
+                },
+                {
+                  label: 'ENG210 - Technical Writing',
+                  data: [90, 92, 88],
+                  borderColor: '#ea4335',
+                  backgroundColor: 'rgba(234, 67, 53, 0.1)',
+                  tension: 0.3,
+                  fill: true
+                },
+                {
+                  label: 'CS350 - Database Systems',
+                  data: [83, 85, 87],
+                  borderColor: '#fbbc05',
+                  backgroundColor: 'rgba(251, 188, 5, 0.1)',
+                  tension: 0.3,
+                  fill: true
+                },
+                {
+                  label: 'PHYS201 - Physics for Engineers',
+                  data: [75, 80, 82],
+                  borderColor: '#9c27b0',
+                  backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                  tension: 0.3,
+                  fill: true
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return context.dataset.label + ': ' + context.parsed.y + '%';
+                    }
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  min: 60,
+                  max: 100,
+                  title: {
+                    display: true,
+                    text: 'Grade (%)'
+                  }
+                }
+              }
+            }
+          });
+          
+          showToast('success', 'Progress charts loaded successfully');
+        }, 1500);
+      }
+      
+      // Load Assignments
+      function loadAssignments() {
+        $('#assignments-table-body').html(`
+          <tr>
+            <td colspan="5" class="text-center">
+              <div class="loading-spinner"></div> Loading assignments...
+            </td>
+          </tr>
+        `);
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // This would be replaced with actual API data in the full implementation
+          $('#assignments-table-body').html(`
+            <tr>
+              <td>CS301</td>
+              <td>Homework 3: Algorithm Implementation</td>
+              <td>Oct 15, 2023 (11:59 PM)</td>
+              <td><span class="badge bg-warning">Pending</span></td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
+                  <i class="fas fa-upload"></i> Submit
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>MATH250</td>
+              <td>Midterm Project: Matrix Analysis</td>
+              <td>Oct 20, 2023 (11:59 PM)</td>
+              <td><span class="badge bg-warning">Pending</span></td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
+                  <i class="fas fa-upload"></i> Submit
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>ENG210</td>
+              <td>Essay: Technical Documentation</td>
+              <td>Oct 10, 2023 (11:59 PM)</td>
+              <td><span class="badge bg-success">Submitted</span></td>
+              <td>
+                <button class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>CS350</td>
+              <td>Lab 4: Database Design</td>
+              <td>Oct 18, 2023 (11:59 PM)</td>
+              <td><span class="badge bg-warning">Pending</span></td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
+                  <i class="fas fa-upload"></i> Submit
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>PHYS201</td>
+              <td>Problem Set 5</td>
+              <td>Oct 8, 2023 (11:59 PM)</td>
+              <td><span class="badge bg-danger">Late</span></td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
+                  <i class="fas fa-upload"></i> Submit
+                </button>
+              </td>
+            </tr>
+          `);
+          
+          showToast('success', 'Assignments loaded successfully');
+        }, 1000);
+      }
+      
+      // Load Discussions
+      function loadDiscussions() {
+        $('#discussion-board').html(`<div class="loading-spinner mb-2"></div> Loading discussions...`);
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // This would be replaced with actual API data in the full implementation
+          $('#discussion-board').html(`
+            <div class="discussion-thread mb-3">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="32" height="32">
+                </div>
+                <div class="flex-grow-1 ms-2">
+                  <div class="fw-bold">Dr. Sarah Johnson <small class="text-muted">3 days ago</small></div>
+                  <p>Don't forget to submit your CS301 assignments by Friday! Office hours are extended this week.</p>
+                  <div>
+                    <button class="btn btn-sm btn-link text-decoration-none reply-btn" data-thread-id="1">Reply</button>
+                  </div>
+                  
+                  <div class="ms-4 mt-2">
+                    <div class="d-flex mt-2">
+                      <div class="flex-shrink-0">
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="24" height="24">
+                      </div>
+                      <div class="flex-grow-1 ms-2">
+                        <div class="fw-bold">Alice Walker <small class="text-muted">2 days ago</small></div>
+                        <p>Will the slides from today's lecture be posted online?</p>
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex mt-2">
+                      <div class="flex-shrink-0">
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="24" height="24">
+                      </div>
+                      <div class="flex-grow-1 ms-2">
+                        <div class="fw-bold">Dr. Sarah Johnson <small class="text-muted">2 days ago</small></div>
+                        <p>Yes, they'll be posted by this evening.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="discussion-thread mb-3">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="32" height="32">
+                </div>
+                <div class="flex-grow-1 ms-2">
+                  <div class="fw-bold">Tom Garcia <small class="text-muted">1 day ago</small></div>
+                  <p>Is anyone interested in forming a study group for the upcoming MATH250 exam?</p>
+                  <div>
+                    <button class="btn btn-sm btn-link text-decoration-none reply-btn" data-thread-id="2">Reply</button>
+                  </div>
+                  
+                  <div class="ms-4 mt-2">
+                    <div class="d-flex mt-2">
+                      <div class="flex-shrink-0">
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="24" height="24">
+                      </div>
+                      <div class="flex-grow-1 ms-2">
+                        <div class="fw-bold">Maria Chen <small class="text-muted">1 day ago</small></div>
+                        <p>I'm interested! We could meet at the library this weekend.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `);
+          
+          showToast('success', 'Discussions loaded successfully');
+        }, 1200);
+      }
+      
+      // Update Grade
+      function updateGrade(courseId, termType, gradeValue) {
+        showToast('info', 'Saving grade update...');
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // In the full implementation, this would be an actual API call
+          // For now, we'll just reload the grades tab to simulate the update
+          loadGrades();
+          
+          showToast('success', 'Grade updated successfully');
+        }, 1000);
+      }
+      
+      // Submit Assignment
+      function submitAssignment(assignmentId, file, comments) {
+        showToast('info', 'Uploading assignment...');
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // In the full implementation, this would be an actual API call
+          showToast('success', 'Assignment submitted successfully');
+          
+          // Reload assignments to reflect changes
+          loadAssignments();
+        }, 1500);
+      }
+      
+      // Post Discussion Message
+      function postDiscussionMessage(message) {
+        showToast('info', 'Posting message...');
+        
+        // Simulate API call with a delay
+        setTimeout(function() {
+          // In the full implementation, this would be an actual API call
+        
+          // Add the new message to the discussion board (client-side update)
+          const newMessageHtml = `
+            <div class="discussion-thread mb-3">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="32" height="32">
+                </div>
+                <div class="flex-grow-1 ms-2">
+                  <div class="fw-bold">John A. Smith <small class="text-muted">Just now</small></div>
+                  <p>${message}</p>
+                  <div>
+                    <button class="btn btn-sm btn-link text-decoration-none reply-btn" data-thread-id="new">Reply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          $('#discussion-board').prepend(newMessageHtml);
+          showToast('success', 'Message posted successfully');
+        }, 800);
+      }
+      
+      // Helper function to show toast messages
+      function showToast(type, message) {
+        const toastId = 'toast-' + Date.now();
+        const toastClass = type === 'success' ? 'bg-success' : 
+                           type === 'error' ? 'bg-danger' : 
+                           type === 'info' ? 'bg-info' : 'bg-primary';
+        
+        const toastHtml = `
+          <div id="${toastId}" class="toast ${toastClass} text-white" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <strong class="me-auto">CampusTrack SIS</strong>
+              <small>Now</small>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              ${message}
+            </div>
+          </div>
+        `;
+        
+        $('.toast-container').append(toastHtml);
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 3000 });
+        toast.show();
+        
+        // Clean up the toast after it's hidden
+        toastElement.addEventListener('hidden.bs.toast', function() {
+          $(toastElement).remove();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
