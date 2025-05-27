@@ -214,35 +214,158 @@
       margin-bottom: 5px;
       color: rgba(0, 0, 0, 0.7);
     }
+ /* Container for the subject list items styled as cards */
+#subjectList .subject-item {
+  border: 1px solid #30acff;
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: #30acff;
+  transition: box-shadow 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+#subjectList .subject-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: #0066ff;
+}
+
+/* Badge styling stays as is but reposition a bit if needed */
+#subjectList .badge {
+  font-size: 0.8rem;
+  top: 12px;
+  right: 16px;
+  position: absolute;
+}
+
+/* Card style for the form container */
+#formSection {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  padding: 24px;
+  margin-top: 10px;
+}
+
+/* Option list with circle bullets */
+.option-list {
+  list-style-type: circle;
+  padding-left: 24px;
+  margin-bottom: 1em;
+}
+
+/* Option items styling */
+.option-list li {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+  user-select: none;
+  border: 1px solid transparent;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Hover effect for options */
+.option-list li:hover {
+  background-color: #eef2f7;
+  width: 13rem;
+}
+
+/* Selected option style */
+.option-list li.selected {
+  background-color: #2937f0;
+  color: #fff;
+  border-color: #2937f0;
+  width: 13rem;
+}
+
+/* Style for the submit button to match card style */
+#evaluationForm button[type="submit"] {
+  margin-top: 12px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
+}
+
+#evaluationForm button[type="submit"]:hover {
+  background-color: #0056b3;
+  color: white;
+}
+.join-call-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .join-call-btn:hover {
+    background-color: #218838 !important;
+    transform: scale(1.03);
+  }
+
+  .modal-header.bg-info {
+    background: linear-gradient(to right, #17a2b8, #138496);
+  }
+
+  .modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  #jitsiContainer {
+    background-color: #f5f5f5;
+  }
+
+  @media (max-width: 768px) {
+  .modal-dialog.modal-lg {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .modal-body {
+    height: 80vh;
+  }
+}
+ .hidden {
+    display: none;
+  }
   </style>
 </head>
 <body>
   <!-- Login Form -->
   <div class="login-container" id="login-container">
-    <div class="login-logo">
+    <div class="login-logo mb-4 text-center">
       <h1 class="text-primary"><i class="fas fa-university me-2"></i>CampusTrack SIS</h1>
       <p class="text-muted">Student Information System</p>
     </div>
-    <form id="login-form">
+    <form id="login-form" novalidate>
       <div class="mb-3">
         <label for="studentId" class="form-label">Student ID</label>
-        <input type="text" class="form-control" id="studentId" required>
+        <input type="text" class="form-control" id="studentId" required />
         <div class="invalid-feedback">Please enter your Student ID.</div>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" required>
+        <input type="password" class="form-control" id="password" required />
         <div class="invalid-feedback">Please enter your password.</div>
       </div>
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn-primary">Login</button>
       </div>
-      <p class="text-center mt-3">
-        <a href="javascript:void(0)" class="text-decoration-none">Forgot Password?</a>
-      </p>
       <div id="login-error" class="mt-3 hidden"></div>
     </form>
   </div>
+
 
   <!-- Main Dashboard -->
   <div class="dashboard-container" id="dashboard-container">
@@ -314,13 +437,18 @@
       <i class="fas fa-chart-bar me-1"></i> Grades Overview
     </button>
   </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button" role="tab" aria-controls="progress" aria-selected="false">
-      <i class="fas fa-chart-line me-1"></i> Progress Charts
+   <li class="nav-item" role="presentation">
+    <button class="nav-link" id="grades-tab" data-bs-toggle="tab" data-bs-target="#evaluation" type="button" role="tab" aria-controls="evaluation" aria-selected="false">
+      <i class="fas fa-chart-bar me-1"></i> Evaluation
     </button>
   </li>
 </ul>
-      
+  
+
+
+
+
+
       <div class="tab-content" id="mainTabsContent">
         <!-- Courses & Schedule Tab -->
         <div class="tab-pane fade show active" id="courses" role="tabpanel" aria-labelledby="courses-tab">
@@ -367,8 +495,54 @@
               </div>
             </div>
           </div>
-          
-          <div class="row">
+
+
+             <!-- Join Call Button -->
+<button class="btn btn-success join-call-btn" data-bs-toggle="modal" data-bs-target="#subjectModal">
+  <i class="fas fa-video"></i> Join Call
+</button>
+
+<!-- Subject Selection Modal -->
+<div class="modal fade" id="subjectModal" tabindex="-1" aria-labelledby="subjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="subjectModalLabel">Select Subject to Join</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group" id="subjectList">
+          <!-- Subjects will be dynamically inserted here -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Video Call Modal -->
+<div class="modal fade" id="videoCallModal" tabindex="-1" aria-labelledby="videoCallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="videoCallModalLabel">
+          <i class="fas fa-video me-2"></i> Video Call
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="endCall()"></button>
+      </div>
+      <div class="modal-body p-0" style="height: 600px;">
+        <div id="jitsiContainer" style="width: 100%; height: 100%;"></div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src='https://meet.jit.si/external_api.js'></script>
+
+
+
+          <div class="row" style="margin-top: 2rem;">
             <div class="col-lg-8">
               <h4 class="mb-3">Upcoming Assignments</h4>
               <div class="table-responsive">
@@ -385,7 +559,7 @@
                   <tbody id="assignments-table-body">
                     <tr>
                       <td colspan="5" class="text-center">
-                        <div class="loading-spinner"></div> Loading assignments...
+                       
                       </td>
                     </tr>
                   </tbody>
@@ -427,7 +601,7 @@
               <div class="card">
                 <div class="card-body" style="max-height: 600px; overflow-y: auto;">
                   <div id="discussion-board">
-                    <div class="loading-spinner mb-2"></div> Loading discussions...
+                    
                   </div>
                   
                   <form id="post-discussion-form" class="mt-3">
@@ -470,42 +644,6 @@
           </div>
         </div>
         
-        <!-- Progress Charts Tab -->
-        <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
-          <h4 class="mb-3">Grade Progression</h4>
-          <div class="chart-container">
-            <canvas id="gradesChart"></canvas>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-light">
-                  <h5 class="mb-0">Performance Summary</h5>
-                </div>
-                <div class="card-body">
-                  <p class="mb-2">Current GPA: <strong id="current-gpa">Loading...</strong></p>
-                  <p class="mb-2">Best Performing Course: <strong id="best-course">Loading...</strong></p>
-                  <p class="mb-0">Areas for Improvement: <strong id="improvement-areas">Loading...</strong></p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-light">
-                  <h5 class="mb-0">Academic Goals</h5>
-                </div>
-                <div class="card-body">
-                  <p class="mb-2">Target GPA: <strong id="target-gpa">Loading...</strong></p>
-                  <p class="mb-2">Required Grades: <strong id="required-grades">Loading...</strong></p>
-                  <p class="mb-0">Academic Standing: <strong id="academic-standing">Loading...</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   
   <!-- Toast Messages Container -->
   <div class="toast-container"></div>
@@ -548,669 +686,173 @@
     </div>
   </div>
 
+  <!-- Evaluation Tab Pane -->
+      <div class="tab-pane fade" id="evaluation" role="tabpanel" aria-labelledby="evaluation-tab">
+        <div class="container mt-4">
+          <div class="row">
+            
+            <!-- 4-grid Subject List -->
+            <div class="col-md-4">
+              <h5>Subjects</h5>
+              <div class="list-group" id="subjectList">
+                <a href="#" class="list-group-item list-group-item-action subject-item" data-subject="Math">
+                  Math <span class="badge bg-success float-end d-none">Done</span>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action subject-item" data-subject="Science">
+                  Science <span class="badge bg-success float-end d-none">Done</span>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action subject-item" data-subject="English">
+                  English <span class="badge bg-success float-end d-none">Done</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- 8-grid Evaluation Form -->
+            <div class="col-md-8">
+              <div id="formSection" class="d-none">
+                <h5  style="color: #1a73e8;" class="mb-3">Evaluating: <span id="subjectName"></span></h5>
+                          <form id="evaluationForm">
+
+                  <div class="mb-3 question-block" data-question="q1">
+                    <label class="form-label"> <b>1. The subject was engaging and interesting.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q1" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q2">
+                    <label class="form-label"> <b>2. The lessons were well-organized and clear.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q2" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q3">
+                    <label class="form-label"> <b>3. The instructor explained concepts clearly.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q3" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q4">
+                    <label class="form-label"><b>4. The materials provided were helpful and relevant.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q4" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q5">
+                    <label class="form-label"> <b>5. Assignments were meaningful and connected to the topic.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q5" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q6">
+                    <label class="form-label"><b>6. I was encouraged to think critically.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q6" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q7">
+                    <label class="form-label"> <b>7. I was motivated to learn more about the subject.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q7" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q8">
+                    <label class="form-label"><b>8. The class environment was supportive.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q8" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q9">
+                    <label class="form-label"><b>9. I feel more knowledgeable about the subject now.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q9" required />
+                  </div>
+
+                  <div class="mb-3 question-block" data-question="q10">
+                    <label class="form-label"><b>10. I would recommend this subject to others.</b></label>
+                    <ul class="option-list">
+                      <li data-value="1">1 - Strongly Disagree</li>
+                      <li data-value="2">2 - Disagree</li>
+                      <li data-value="3">3 - Neutral</li>
+                      <li data-value="4">4 - Agree</li>
+                      <li data-value="5">5 - Strongly Agree</li>
+                    </ul>
+                    <input type="hidden" name="q10" required />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="feedback" class="form-label">Additional Feedback</label>
+                    <textarea class="form-control" id="feedback" name="feedback" rows="4" required></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Submit Evaluation</button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
   <!-- Bootstrap, jQuery and other JS libraries -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script id="app-script">
-    $(document).ready(function() {
-      // Login Form Validation
-      $('#login-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        let isValid = true;
-        const studentId = $('#studentId').val().trim();
-        const password = $('#password').val().trim();
-        
-        // Validate Student ID
-        if (!studentId) {
-          $('#studentId').addClass('is-invalid input-error-shake');
-          isValid = false;
-        } else {
-          $('#studentId').removeClass('is-invalid input-error-shake');
-        }
-        
-        // Validate Password
-        if (!password) {
-          $('#password').addClass('is-invalid input-error-shake');
-          isValid = false;
-        } else {
-          $('#password').removeClass('is-invalid input-error-shake');
-        }
-        
-        if (isValid) {
-          // Simulate login API call
-          loginUser(studentId, password);
-        }
-      });
-      
-      // Logout functionality
-      $('#logout-link').on('click', function() {
-        $('#login-container').show();
-        $('#dashboard-container').hide();
-        $('#studentId').val('');
-        $('#password').val('');
-        $('#login-error').addClass('hidden');
-      });
-      
-      // Handle tab switching - load data when tab is shown
-      $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
-        const targetId = $(e.target).attr('href');
-        
-        if (targetId === '#courses') {
-          loadCourses();
-        } else if (targetId === '#grades') {
-          loadGrades();
-        } else if (targetId === '#progress') {
-          loadProgressCharts();
-        } else if (targetId === '#assignments') {
-          loadAssignments();
-          loadDiscussions();
-        }
-      });
-      
-      // Open Edit Grade Modal
-      $(document).on('click', '.edit-grade-btn', function() {
-        const courseId = $(this).data('course-id');
-        const courseName = $(this).data('course-name');
-        const termType = $(this).data('term-type');
-        const termName = $(this).data('term-name');
-        const currentValue = $(this).data('current-value');
-        
-        $('#edit-course-id').val(courseId);
-        $('#edit-course-name').val(courseName);
-        $('#edit-term-type').val(termType);
-        $('#edit-term-name').val(termName);
-        $('#edit-grade-value').val(currentValue);
-        
-        const editGradeModal = new bootstrap.Modal(document.getElementById('editGradeModal'));
-        editGradeModal.show();
-      });
-      
-      // Save Grade Changes
-      $('#save-grade-btn').on('click', function() {
-        const courseId = $('#edit-course-id').val();
-        const termType = $('#edit-term-type').val();
-        const gradeValue = $('#edit-grade-value').val();
-        
-        if (gradeValue >= 0 && gradeValue <= 100) {
-          updateGrade(courseId, termType, gradeValue);
-          const editGradeModal = bootstrap.Modal.getInstance(document.getElementById('editGradeModal'));
-          editGradeModal.hide();
-        } else {
-          // Show validation error
-          $('#edit-grade-value').addClass('is-invalid');
-        }
-      });
-      
-      // Assignment Upload Form
-      $('#assignment-upload-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        const assignmentId = $('#assignment-select').val();
-        const file = $('#assignment-file')[0].files[0];
-        const comments = $('#assignment-comments').val();
-        
-        if (assignmentId && file) {
-          submitAssignment(assignmentId, file, comments);
-        }
-      });
-      
-      // Post Discussion Message
-      $('#post-discussion-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        const message = $('#discussion-message').val().trim();
-        
-        if (message) {
-          postDiscussionMessage(message);
-          $('#discussion-message').val('');
-        }
-      });
-      
-      // === API Functions ===
-      
-      // Login User
-      function loginUser(studentId, password) {
-        $('#login-error').addClass('hidden').removeClass('login-error-enhanced');
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          if (studentId === "20231969" && password === "12345") {
-            $('#login-container').hide();
-            $('#dashboard-container').show();
-            loadStudentProfile();
-            loadCourses();
-          } else {
-            $('#studentId, #password').addClass('input-error-shake');
-            $('#login-error').removeClass('hidden')
-              .addClass('login-error-enhanced')
-              .text('Login failed: The Student ID or Password you entered is incorrect. Please use \'12345\' as Student ID and \'password\' as Password for testing.');
-          }
-        }, 1000);
-      }
-      
-      // Load Student Profile
-      function loadStudentProfile() {
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // This would be replaced with actual API data in the full implementation
-          $('#student-name').text('Sander Perejan');
-          $('#student-id').text('ID: 20231969');
-          $('#student-program').text('Bachelor of Science in Information Technology');
-          $('#student-department').text('Institute of Computer Studies');
-          $('#student-email').text('20231969@nbsc.edu.ph');
-          $('#student-phone').text('09922118799');
-          $('#student-address').text('New Corales, Agusan Canyon, Manolo Fortich, Bukidnon');
-          $('#academic-year').text('2024-2025');
-        }, 1000);
-      }
-      
-      // Load Courses
-      function loadCourses() {
-        $('#courses-table-body').html(`
-          <tr>
-            <td colspan="6" class="text-center">
-              <div class="loading-spinner"></div> Loading courses...
-            </td>
-          </tr>
-        `);
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // This would be replaced with actual API data in the full implementation
-          $('#courses-table-body').html(`
-            <tr>
-              <td>CS301</td>
-              <td>Advanced Programming</td>
-              <td>Dr. Sarah Johnson</td>
-              <td>Mon, Wed, Fri 10:00-11:30 AM</td>
-              <td>Engineering Building, Room 205</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <td>MATH250</td>
-              <td>Linear Algebra</td>
-              <td>Prof. Michael Chen</td>
-              <td>Tue, Thu 1:00-2:30 PM</td>
-              <td>Science Center, Room 110</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>ENG210</td>
-              <td>Technical Writing</td>
-              <td>Dr. Emily Rodriguez</td>
-              <td>Wed 3:00-5:30 PM</td>
-              <td>Liberal Arts Building, Room 302</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>CS350</td>
-              <td>Database Systems</td>
-              <td>Prof. David Wilson</td>
-              <td>Mon, Fri 1:00-2:30 PM</td>
-              <td>Engineering Building, Room 105</td>
-              <td>4</td>
-            </tr>
-            <tr>
-              <td>PHYS201</td>
-              <td>Physics for Engineers</td>
-              <td>Dr. Robert Lee</td>
-              <td>Tue, Thu 9:00-10:30 AM</td>
-              <td>Science Center, Room 220</td>
-              <td>4</td>
-            </tr>
-          `);
-          
-          showToast('success', 'Courses loaded successfully');
-        }, 1500);
-      }
-      
-      // Load Grades
-      function loadGrades() {
-        $('#grades-table-body').html(`
-          <tr>
-            <td colspan="7" class="text-center">
-              <div class="loading-spinner"></div> Loading grades...
-            </td>
-          </tr>
-        `);
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // This would be replaced with actual API data in the full implementation
-          $('#grades-table-body').html(`
-            <tr>
-              <td>CS301</td>
-              <td>Advanced Programming</td>
-              <td>85</td>
-              <td>88</td>
-              <td>90</td>
-              <td>88</td>
-              <td>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="CS301" data-course-name="Advanced Programming" data-term-type="prelim" data-term-name="Prelim" data-current-value="85">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>MATH250</td>
-              <td>Linear Algebra</td>
-              <td>78</td>
-              <td>82</td>
-              <td>85</td>
-              <td>82</td>
-              <td>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="MATH250" data-course-name="Linear Algebra" data-term-type="prelim" data-term-name="Prelim" data-current-value="78">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>ENG210</td>
-              <td>Technical Writing</td>
-              <td>90</td>
-              <td>92</td>
-              <td>88</td>
-              <td>90</td>
-              <td>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="ENG210" data-course-name="Technical Writing" data-term-type="prelim" data-term-name="Prelim" data-current-value="90">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>CS350</td>
-              <td>Database Systems</td>
-              <td>83</td>
-              <td>85</td>
-              <td>87</td>
-              <td>85</td>
-              <td>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="CS350" data-course-name="Database Systems" data-term-type="prelim" data-term-name="Prelim" data-current-value="83">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>PHYS201</td>
-              <td>Physics for Engineers</td>
-              <td>75</td>
-              <td>80</td>
-              <td>82</td>
-              <td>79</td>
-              <td>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary edit-grade-btn" data-course-id="PHYS201" data-course-name="Physics for Engineers" data-term-type="prelim" data-term-name="Prelim" data-current-value="75">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `);
-          
-          showToast('success', 'Grades loaded successfully');
-        }, 500); // Changed from 1500 to 500 to speed up grades loading
-      }
-      
-      // Load Progress Charts
-      function loadProgressCharts() {
-        // Show loading state
-        $('#current-gpa').text('Loading...');
-        $('#best-course').text('Loading...');
-        $('#improvement-areas').text('Loading...');
-        $('#target-gpa').text('Loading...');
-        $('#required-grades').text('Loading...');
-        $('#academic-standing').text('Loading...');
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // Update summary data
-          $('#current-gpa').text('3.6');
-          $('#best-course').text('ENG210 - Technical Writing (A)');
-          $('#improvement-areas').text('PHYS201 - Physics for Engineers');
-          $('#target-gpa').text('3.8');
-          $('#required-grades').text('B+ or higher in remaining courses');
-          $('#academic-standing').text('Good Standing');
-          
-          // Initialize the chart
-          const ctx = document.getElementById('gradesChart').getContext('2d');
-          
-          // Destroy existing chart if it exists
-          if (window.gradesChart) {
-            window.gradesChart.destroy();
-          }
-          
-          // Create new chart
-          window.gradesChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: ['Prelim', 'Midterm', 'Final'],
-              datasets: [
-                {
-                  label: 'CS301 - Advanced Programming',
-                  data: [85, 88, 90],
-                  borderColor: '#1a73e8',
-                  backgroundColor: 'rgba(26, 115, 232, 0.1)',
-                  tension: 0.3,
-                  fill: true
-                },
-                {
-                  label: 'MATH250 - Linear Algebra',
-                  data: [78, 82, 85],
-                  borderColor: '#34a853',
-                  backgroundColor: 'rgba(52, 168, 83, 0.1)',
-                  tension: 0.3,
-                  fill: true
-                },
-                {
-                  label: 'ENG210 - Technical Writing',
-                  data: [90, 92, 88],
-                  borderColor: '#ea4335',
-                  backgroundColor: 'rgba(234, 67, 53, 0.1)',
-                  tension: 0.3,
-                  fill: true
-                },
-                {
-                  label: 'CS350 - Database Systems',
-                  data: [83, 85, 87],
-                  borderColor: '#fbbc05',
-                  backgroundColor: 'rgba(251, 188, 5, 0.1)',
-                  tension: 0.3,
-                  fill: true
-                },
-                {
-                  label: 'PHYS201 - Physics for Engineers',
-                  data: [75, 80, 82],
-                  borderColor: '#9c27b0',
-                  backgroundColor: 'rgba(156, 39, 176, 0.1)',
-                  tension: 0.3,
-                  fill: true
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: 'top',
-                },
-                tooltip: {
-                  callbacks: {
-                    label: function(context) {
-                      return context.dataset.label + ': ' + context.parsed.y + '%';
-                    }
-                  }
-                }
-              },
-              scales: {
-                y: {
-                  min: 60,
-                  max: 100,
-                  title: {
-                    display: true,
-                    text: 'Grade (%)'
-                  }
-                }
-              }
-            }
-          });
-          
-          showToast('success', 'Progress charts loaded successfully');
-        }, 1500);
-      }
-      
-      // Load Assignments
-      function loadAssignments() {
-        $('#assignments-table-body').html(`
-          <tr>
-            <td colspan="5" class="text-center">
-              <div class="loading-spinner"></div> Loading assignments...
-            </td>
-          </tr>
-        `);
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // This would be replaced with actual API data in the full implementation
-          $('#assignments-table-body').html(`
-            <tr>
-              <td>CS301</td>
-              <td>Homework 3: Algorithm Implementation</td>
-              <td>Oct 15, 2023 (11:59 PM)</td>
-              <td><span class="badge bg-warning">Pending</span></td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
-                  <i class="fas fa-upload"></i> Submit
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>MATH250</td>
-              <td>Midterm Project: Matrix Analysis</td>
-              <td>Oct 20, 2023 (11:59 PM)</td>
-              <td><span class="badge bg-warning">Pending</span></td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
-                  <i class="fas fa-upload"></i> Submit
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>ENG210</td>
-              <td>Essay: Technical Documentation</td>
-              <td>Oct 10, 2023 (11:59 PM)</td>
-              <td><span class="badge bg-success">Submitted</span></td>
-              <td>
-                <button class="btn btn-sm btn-outline-secondary">
-                  <i class="fas fa-eye"></i> View
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>CS350</td>
-              <td>Lab 4: Database Design</td>
-              <td>Oct 18, 2023 (11:59 PM)</td>
-              <td><span class="badge bg-warning">Pending</span></td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
-                  <i class="fas fa-upload"></i> Submit
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>PHYS201</td>
-              <td>Problem Set 5</td>
-              <td>Oct 8, 2023 (11:59 PM)</td>
-              <td><span class="badge bg-danger">Late</span></td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='#assignments'">
-                  <i class="fas fa-upload"></i> Submit
-                </button>
-              </td>
-            </tr>
-          `);
-          
-          showToast('success', 'Assignments loaded successfully');
-        }, 1000);
-      }
-      
-      // Load Discussions
-      function loadDiscussions() {
-        $('#discussion-board').html(`<div class="loading-spinner mb-2"></div> Loading discussions...`);
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // This would be replaced with actual API data in the full implementation
-          $('#discussion-board').html(`
-            <div class="discussion-thread mb-3">
-              <div class="d-flex">
-                <div class="flex-shrink-0">
-                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="32" height="32">
-                </div>
-                <div class="flex-grow-1 ms-2">
-                  <div class="fw-bold">Dr. Sarah Johnson <small class="text-muted">3 days ago</small></div>
-                  <p>Don't forget to submit your CS301 assignments by Friday! Office hours are extended this week.</p>
-                  <div>
-                    <button class="btn btn-sm btn-link text-decoration-none reply-btn" data-thread-id="1">Reply</button>
-                  </div>
-                  
-                  <div class="ms-4 mt-2">
-                    <div class="d-flex mt-2">
-                      <div class="flex-shrink-0">
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="24" height="24">
-                      </div>
-                      <div class="flex-grow-1 ms-2">
-                        <div class="fw-bold">Alice Walker <small class="text-muted">2 days ago</small></div>
-                        <p>Will the slides from today's lecture be posted online?</p>
-                      </div>
-                    </div>
-                    
-                    <div class="d-flex mt-2">
-                      <div class="flex-shrink-0">
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="24" height="24">
-                      </div>
-                      <div class="flex-grow-1 ms-2">
-                        <div class="fw-bold">Dr. Sarah Johnson <small class="text-muted">2 days ago</small></div>
-                        <p>Yes, they'll be posted by this evening.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="discussion-thread mb-3">
-              <div class="d-flex">
-                <div class="flex-shrink-0">
-                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="32" height="32">
-                </div>
-                <div class="flex-grow-1 ms-2">
-                  <div class="fw-bold">Tom Garcia <small class="text-muted">1 day ago</small></div>
-                  <p>Is anyone interested in forming a study group for the upcoming MATH250 exam?</p>
-                  <div>
-                    <button class="btn btn-sm btn-link text-decoration-none reply-btn" data-thread-id="2">Reply</button>
-                  </div>
-                  
-                  <div class="ms-4 mt-2">
-                    <div class="d-flex mt-2">
-                      <div class="flex-shrink-0">
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="24" height="24">
-                      </div>
-                      <div class="flex-grow-1 ms-2">
-                        <div class="fw-bold">Maria Chen <small class="text-muted">1 day ago</small></div>
-                        <p>I'm interested! We could meet at the library this weekend.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `);
-          
-          showToast('success', 'Discussions loaded successfully');
-        }, 1200);
-      }
-      
-      // Update Grade
-      function updateGrade(courseId, termType, gradeValue) {
-        showToast('info', 'Saving grade update...');
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // In the full implementation, this would be an actual API call
-          // For now, we'll just reload the grades tab to simulate the update
-          loadGrades();
-          
-          showToast('success', 'Grade updated successfully');
-        }, 1000);
-      }
-      
-      // Submit Assignment
-      function submitAssignment(assignmentId, file, comments) {
-        showToast('info', 'Uploading assignment...');
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // In the full implementation, this would be an actual API call
-          showToast('success', 'Assignment submitted successfully');
-          
-          // Reload assignments to reflect changes
-          loadAssignments();
-        }, 1500);
-      }
-      
-      // Post Discussion Message
-      function postDiscussionMessage(message) {
-        showToast('info', 'Posting message...');
-        
-        // Simulate API call with a delay
-        setTimeout(function() {
-          // In the full implementation, this would be an actual API call
-        
-          // Add the new message to the discussion board (client-side update)
-          const newMessageHtml = `
-            <div class="discussion-thread mb-3">
-              <div class="d-flex">
-                <div class="flex-shrink-0">
-                  <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" class="rounded-circle" width="32" height="32">
-                </div>
-                <div class="flex-grow-1 ms-2">
-                  <div class="fw-bold">John A. Smith <small class="text-muted">Just now</small></div>
-                  <p>${message}</p>
-                  <div>
-                    <button class="btn btn-sm btn-link text-decoration-none reply-btn" data-thread-id="new">Reply</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-          
-          $('#discussion-board').prepend(newMessageHtml);
-          showToast('success', 'Message posted successfully');
-        }, 800);
-      }
-      
-      // Helper function to show toast messages
-      function showToast(type, message) {
-        const toastId = 'toast-' + Date.now();
-        const toastClass = type === 'success' ? 'bg-success' : 
-                           type === 'error' ? 'bg-danger' : 
-                           type === 'info' ? 'bg-info' : 'bg-primary';
-        
-        const toastHtml = `
-          <div id="${toastId}" class="toast ${toastClass} text-white" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-              <strong class="me-auto">CampusTrack SIS</strong>
-              <small>Now</small>
-              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-              ${message}
-            </div>
-          </div>
-        `;
-        
-        $('.toast-container').append(toastHtml);
-        const toastElement = document.getElementById(toastId);
-        const toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 3000 });
-        toast.show();
-        
-        // Clean up the toast after it's hidden
-        toastElement.addEventListener('hidden.bs.toast', function() {
-          $(toastElement).remove();
-        });
-      }
-    });
+ <script src="https://meet.jit.si/external_api.js"></script>
+  <script src="script.js" id="app-script">
   </script>
 </body>
 </html>
